@@ -1,0 +1,48 @@
+{% load static %}
+<header class="sticky top-0 z-40 border-b border-line/70 bg-surface/85 backdrop-blur">
+  <div class="container-page flex h-16 items-center justify-between gap-4">
+    <a href="{% url 'home' %}" class="flex items-center gap-3 rounded-full" aria-label="ICPC FCAI CU Community – Home">
+      <img src="{% static 'img/logo.svg' %}" alt="" width="44" height="33" class="h-9 w-auto">
+      <span class="font-display text-lg font-bold tracking-tight text-heading">ICPC FCAI CU</span>
+    </a>
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
+      <a href="{% url 'levels-index' %}" class="rounded-full px-4 py-2 text-sm font-medium text-body transition hover:bg-band hover:text-heading">Levels</a>
+      <a href="{% url 'waves-index' %}" class="rounded-full px-4 py-2 text-sm font-medium text-body transition hover:bg-band hover:text-heading">Waves</a>
+      <a href="{% url 'sessions-index' %}" class="rounded-full px-4 py-2 text-sm font-medium text-body transition hover:bg-band hover:text-heading">Sessions</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      {# Theme switcher #}
+      <div class="relative" id="theme-menu">
+        <button type="button" id="theme-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-panel" aria-label="Change theme"
+                class="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-panel text-heading transition hover:bg-band">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 2-.9 2-2 0-.6-.3-1.1-.6-1.5-.3-.4-.4-.9-.4-1.5 0-1.1.9-2 2-2h2.3A3.7 3.7 0 0 0 21 10.3C21 6.3 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1" fill="currentColor"/><circle cx="10.5" cy="7" r="1" fill="currentColor"/><circle cx="15" cy="7.5" r="1" fill="currentColor"/></svg>
+        </button>
+        <div id="theme-panel" role="menu" aria-label="Theme" hidden
+             class="absolute end-0 mt-2 w-48 rounded-menu border border-line bg-panel p-1.5 shadow-float">
+          <button type="button" role="menuitemradio" aria-checked="false" data-set-theme="light"    class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-heading hover:bg-band"><span class="swatch" style="--a:#fff;--b:#2b6aad"></span>Light</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-set-theme="dark"     class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-heading hover:bg-band"><span class="swatch" style="--a:#0e1014;--b:#5b9be0"></span>Dark</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-set-theme="cream"    class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-heading hover:bg-band"><span class="swatch" style="--a:#f1f2ea;--b:#2b6aad"></span>Cream</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-set-theme="midnight" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-heading hover:bg-band"><span class="swatch" style="--a:#0a1a31;--b:#f7ab2f"></span>Midnight</button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-set-theme="system"   class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-heading hover:bg-band"><span class="swatch" style="--a:#fff;--b:#0e1014"></span>System</button>
+        </div>
+      </div>
+
+      <a href="{% url 'waves-index' %}" class="btn btn-primary hidden md:inline-flex">Join a wave</a>
+
+      {# Mobile menu (no JS) #}
+      <details class="relative md:hidden">
+        <summary class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-line bg-panel text-heading [&::-webkit-details-marker]:hidden" aria-label="Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </summary>
+        <div class="absolute end-0 mt-2 w-60 rounded-menu border border-line bg-panel p-2 shadow-float">
+          <a href="{% url 'levels-index' %}" class="block rounded-lg px-4 py-3 text-sm font-medium text-heading hover:bg-band">Levels</a>
+          <a href="{% url 'waves-index' %}" class="block rounded-lg px-4 py-3 text-sm font-medium text-heading hover:bg-band">Waves</a>
+          <a href="{% url 'sessions-index' %}" class="block rounded-lg px-4 py-3 text-sm font-medium text-heading hover:bg-band">Sessions</a>
+          <a href="{% url 'waves-index' %}" class="btn btn-primary mt-2 w-full">Join a wave</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>

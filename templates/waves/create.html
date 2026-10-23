@@ -1,0 +1,19 @@
+<form method="POST" action="{% url 'waves-index' %}">
+    {% csrf_token %}
+    <label>Title</label>
+    <input name="title" type="text" placeholder="wave title" required>
+    <br>
+    <label>Slug</label>
+    <input name="slug" type="text" placeholder="wave-slug" required>
+    <br>
+    <label>Description</label>
+    <textarea name="description"></textarea>
+    <br>
+    <label>Starts At</label>
+    <input name="starts_at" type="datetime-local" step="1">
+    <br>
+    <label>Ends At</label>
+    <input name="ends_at" type="datetime-local" step="1">
+    <br>
+    <button type="submit">Submit</button>
+</form>

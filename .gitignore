@@ -1,0 +1,17 @@
+__pycache__/
+.venv/
+ai/
+.env
+.env.local
+.env.production
+.env.vercel
+
+db.sqlite3
+*.py[cod]
+media/
+venv/
+*.egg-info/
+.DS_Store
+.idea/
+staticfiles/
+node_modules/

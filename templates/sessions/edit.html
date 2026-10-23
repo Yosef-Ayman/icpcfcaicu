@@ -1,0 +1,39 @@
+<form method="POST" action="{% url 'sessions-edit' session.slug %}">
+    {% csrf_token %}
+    <label>Title</label>
+    <input name="title" type="text" placeholder="session title" value="{{ session.title }}" required>
+    <br>
+    <label>Slug</label>
+    <input name="slug" type="text" placeholder="session-slug" value="{{ session.slug }}" required>
+    <br>
+    <label>Description</label>
+    <textarea name="description">{{ session.description }}</textarea>
+    <br>
+    <label>Starts At</label>
+    <input name="starts_at" type="datetime-local" step="1" value="{{ session.starts_at }}">
+    <br>
+    <label>Ends At</label>
+    <input name="ends_at" type="datetime-local" step="1" value="{{ session.ends_at }}">
+    <br>
+    <label>Wave</label>
+    <a href="{% url 'waves-show' session.wave.slug %}"><h3>{{ session.wave.title }}</h3></a>
+    <a href="{% url 'levels-show' session.level.slug %}"><h3>{{ session.level.title }}</h3></a>
+
+    <label>Wave</label>
+    <select name="wave">
+        {% for wave in waves %}
+            <option value="{{ wave.slug }}">{{ wave.title }} | {{ wave.slug }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label>Level</label>
+    <select name="level">
+        {% for level in levels %}
+            <option value="{{ level.slug }}">{{ level.title }} | {{ level.slug }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <button type="submit">Submit</button>
+</form>
+
+<a href="{% url 'sessions-show' session.slug %}">{{ session.title }}</a>

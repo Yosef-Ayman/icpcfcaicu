@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block seo %}
+  <title>ICPC FCAI CU Community | Train together, level up every wave</title>
+  <meta name="description" content="Join a structured training community with clear levels, waves, and live sessions.{% if next_sessions %} Upcoming sessions: {% for session in next_sessions %}{{ session.title }}{% if not forloop.last %}, {% endif %}{% endfor %}.{% endif %}">
+  <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ICPC FCAI CU Community">
+  <meta property="og:title" content="ICPC FCAI CU Community | Train together, level up every wave">
+  <meta property="og:description" content="Clear levels, organized waves, and upcoming live sessions.">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-default.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block structured_data %}
+  {{ block.super }}
+  {% if next_sessions %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {% for session in next_sessions %}
+      {% if session.starts_at %}
+      {
+        "@type": "Event",
+        "name": "{{ session.title|escapejs }}",
+        "startDate": "{{ session.starts_at|date:'c' }}",
+        {% if session.ends_at %}
+        "endDate": "{{ session.ends_at|date:'c' }}",
+        {% endif %}
+        "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "location": {
+          "@type": "VirtualLocation",
+          "url": "{{ request.scheme }}://{{ request.get_host }}{{ session.get_absolute_url }}"
+        },
+        "description": "{{ session.description|default:''|truncatewords:30|escapejs }}",
+        "organizer": {
+          "@type": "Organization",
+          "name": "ICPC FCAI CU Community"
+        }
+      }{% if not forloop.last %},{% endif %}
+      {% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+{# ───────── Hero ───────── #}
+<section class="relative isolate overflow-hidden bg-linear-to-b from-band to-surface">
+  <div class="hero-lines absolute inset-0 -z-10" aria-hidden="true"></div>
+
+  <div class="container-page grid items-center gap-12 py-16 md:py-24 lg:grid-cols-[1.15fr_0.85fr]">
+    <div>
+      <div class="flex items-center gap-1.5" aria-hidden="true">
+        <span class="h-1.5 w-10 rounded-full bg-level-0"></span>
+        <span class="h-1.5 w-10 rounded-full bg-level-1"></span>
+        <span class="h-1.5 w-10 rounded-full bg-level-2"></span>
+      </div>
+
+      <h1 class="mt-6 text-balance text-4xl sm:text-5xl lg:text-6xl xl:text-7xl">Train together. Level up every wave.</h1>
+      <p class="mt-6 max-w-xl text-lg text-body">
+        Live sessions organized in waves, with clear levels you can start from and keep climbing.
+      </p>
+
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <a href="#levels" class="btn-cta">
+          Browse levels
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg>
+          </span>
+        </a>
+
+        {% if current_wave %}
+        <a href="{{ current_wave.get_absolute_url }}" class="btn-anim">
+          <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"/></svg>
+          <span class="text">Current wave</span>
+          <span class="circle" aria-hidden="true"></span>
+          <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"/></svg>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Next session #}
+    <aside aria-labelledby="next-session-title">
+      <article class="panel overflow-hidden shadow-float">
+      {% for session in next_sessions %}
+        {% if session.thumbnail_url %}
+          <img src="{{ session.thumbnail_url }}" alt="{{ session.title }}" width="640" height="360" class="aspect-video w-full object-cover" fetchpriority="high">
+        {% endif %}
+        <div class="border border-y border-line p-6 sm:p-7">
+          <p id="next-session-title" class="label-mono">Next session</p>
+          <h2 class="mt-3 text-2xl"><a href="{{ session.get_absolute_url }}" class="hover:text-brand-text">{{ session.title }}</a></h2>
+
+          {% if session.starts_at %}
+          <p class="mt-4 text-sm text-body">
+            <time datetime="{{ session.starts_at|date:'c' }}">{{ session.starts_at|date:"D, j M Y" }} · {{ session.starts_at|time:"g:i A" }}</time>
+          </p>
+          {% endif %}
+
+          {% if session.level %}
+          <a href="{{ session.level.get_absolute_url }}" class="mt-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-heading">
+            <span class="level-dot size-2.5 rounded-full" style="--lc: {{ session.level.color|default:'#2b6aad' }}"></span>
+            {{ session.level.title }}
+          </a>
+          {% endif %}
+
+          <a href="{{ session.get_absolute_url }}" class="btn-cta mt-6 w-full">
+            Reserve your spot
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg>
+            </span>
+          </a>
+        </div>
+        {% empty %}
+      </article>
+      <div class="panel p-8 text-center">
+        <p id="next-session-title" class="font-display text-xl font-bold text-heading">No upcoming session yet</p>
+        <p class="mt-2 text-sm text-muted">We’ll announce the next one as soon as it’s scheduled.</p>
+      </div>
+      {% endfor %}
+    </aside>
+  </div>
+</section>
+
+{# ───────── Current wave ───────── #}
+{% if current_wave %}
+<section class="container-page mt-6" aria-labelledby="wave-title">
+  <div class="panel grid overflow-hidden md:grid-cols-[0.8fr_1.2fr]">
+    {% if current_wave.thumbnail_url %}
+      <img src="{{ current_wave.thumbnail_url }}" alt="{{ current_wave.title }}" width="640" height="420" class="h-full max-h-80 w-full object-cover md:max-h-none" loading="lazy">
+    {% endif %}
+    <div class="p-7 sm:p-10 {% if not current_wave.thumbnail_url %}md:col-span-2{% endif %}">
+      <p class="label-mono">Current wave</p>
+      <h2 id="wave-title" class="mt-3 text-3xl sm:text-4xl">{{ current_wave.title }}</h2>
+      {% if current_wave.description %}<p class="mt-4 max-w-prose text-body">{{ current_wave.description|truncatewords:40 }}</p>{% endif %}
+      {% if current_wave.starts_at %}
+      <p class="mt-5 text-sm text-muted">
+        <time datetime="{{ current_wave.starts_at|date:'c' }}">{{ current_wave.starts_at|date:"j M Y" }}</time>
+        {% if current_wave.ends_at %} – <time datetime="{{ current_wave.ends_at|date:'c' }}">{{ current_wave.ends_at|date:"j M Y" }}</time>{% endif %}
+      </p>
+      {% endif %}
+      <a href="{{ current_wave.get_absolute_url }}" class="btn-slide mt-7">
+        <span class="slide-block" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+        <span class="label">Wave details</span>
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ───────── Levels (max 3) ───────── #}
+<section id="levels" class="container-page mt-24 scroll-mt-24" aria-labelledby="levels-title">
+  <div class="flex flex-wrap items-end justify-between gap-6">
+    <div class="max-w-2xl">
+      <h2 id="levels-title" class="text-3xl sm:text-4xl lg:text-5xl">Pick your level</h2>
+      <p class="mt-4 text-lg text-body">Each level has its own content and sessions. Start where you fit, then move up.</p>
+    </div>
+    <a href="{% url 'levels-index' %}" class="btn-slide">
+      <span class="slide-block" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+      <span class="label">View all levels</span>
+    </a>
+  </div>
+
+  <ul class="mt-12 grid gap-6 md:grid-cols-3" role="list">
+    {% for level in levels|slice:":3" %}
+      {% cycle '#2b6aad' '#ad281c' '#f7ab2f' as fallback silent %}
+      <li>
+        <article class="panel level-card relative flex h-full flex-col overflow-hidden" style="--lc: {{ level.color|default:fallback }}">
+          {% if level.thumbnail_url %}
+            <img src="{{ level.thumbnail_url }}" alt="{{ level.title }}" width="640" height="360" class="aspect-video w-full object-cover" loading="lazy">
+          {% endif %}
+          <div class="flex flex-1 flex-col p-6 sm:p-7">
+            <div class="flex items-center gap-2">
+              <span class="level-dot size-3 rounded-full" aria-hidden="true"></span>
+              <h3 class="text-xl"><a href="{{ level.get_absolute_url }}" class="underline after:absolute hover:text-brand-text">{{ level.title }}</a></h3>
+            </div>
+            <span class="mt-6 text-sm font-semibold text-brand-text">Explore level</span>
+          </div>
+        </article>
+      </li>
+    {% empty %}
+      <li class="panel p-10 text-center md:col-span-3">
+        <p class="font-display text-xl font-bold text-heading">No levels yet</p>
+        <p class="mt-2 text-sm text-muted">Add your first level from the admin panel and it will show up here.</p>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+
+{# ───────── CTA ───────── #}
+<section class="container-page mt-24">
+  <div class="rounded-panel bg-band px-6 py-14 text-center sm:px-12">
+    <h2 class="mx-auto max-w-2xl text-balance text-3xl sm:text-4xl">Ready for the next wave?</h2>
+    <p class="mx-auto mt-4 max-w-xl text-body">Join the community and get session times as soon as they’re set.</p>
+    <a href="{% url 'waves-index' %}" class="btn-cta mt-8">
+      Join now
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+{% endblock %}

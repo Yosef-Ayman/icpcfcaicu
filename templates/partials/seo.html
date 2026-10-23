@@ -1,0 +1,14 @@
+{% load static %}
+<title>{{ title }}</title>
+<meta name="description" content="{{ description|default:'Structured training sessions, clear levels, and a community that grows together.'|striptags|truncatechars:160 }}">
+<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+<meta property="og:type" content="{{ og_type|default:'website' }}">
+<meta property="og:site_name" content="ICPC FCAI CU Community">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description|default:'Structured training sessions, clear levels, and a community that grows together.'|striptags|truncatechars:200 }}">
+<meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+<meta property="og:image" content="{% if image %}{{ image }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-default.png' %}{% endif %}">
+<meta property="og:image:alt" content="{{ image_alt|default:title }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ title }}">
+<meta name="twitter:image" content="{% if image %}{{ image }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-default.png' %}{% endif %}">

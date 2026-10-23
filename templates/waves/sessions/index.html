@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block seo %}{% include "partials/seo.html" with title=wave.title|add:" sessions | ICPC FCAI CU Community" description="All live sessions in "|add:wave.title|add:" at the ICPC FCAI CU Community." image_alt=wave.title %}{% endblock %}
+
+{% block structured_data %}
+  {{ block.super }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+          {"@type": "ListItem", "position": 2, "name": "Waves", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'waves-index' %}"},
+          {"@type": "ListItem", "position": 3, "name": "{{ wave.title|escapejs }}", "item": "{{ request.scheme }}://{{ request.get_host }}{{ wave.get_absolute_url }}"},
+          {"@type": "ListItem", "position": 4, "name": "Sessions"}
+        ]
+      },
+      {
+        "@type": "ItemList",
+        "itemListElement": [
+          {% for session in sessions %}{"@type": "ListItem", "position": {{ forloop.counter }}, "url": "{{ request.scheme }}://{{ request.get_host }}{{ session.get_absolute_url }}", "name": "{{ session.title|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}
+        ]
+      }
+    ]
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+<section class="bg-linear-to-b from-band to-surface">
+  <div class="container-page py-16 md:py-24">
+    <div class="mt-6 flex items-center gap-5">
+      {% if wave.thumbnail_url %}
+        <img src="{{ wave.thumbnail_url }}" alt="{{ wave.title }}" width="160" height="90" class="hidden aspect-video w-32 rounded-2xl border border-line object-cover sm:block" loading="lazy">
+      {% endif %}
+      <div>
+        <p class="label-mono">{{ wave.title }}</p>
+        <h1 class="mt-2 text-4xl sm:text-5xl">Sessions</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container-page mt-4" aria-label="Sessions">
+  <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+    {% for session in sessions %}
+      <li>{% include "partials/session_card.html" with session=session hide_wave=True %}</li>
+    {% empty %}
+      <li class="sm:col-span-2 lg:col-span-3">{% include "partials/empty_state.html" with title="No sessions yet" text="Sessions for this wave will appear here once they are scheduled." %}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

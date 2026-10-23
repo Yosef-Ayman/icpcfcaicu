@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block seo %}{% include "partials/seo.html" with title="Sessions | ICPC FCAI CU Community" description="Browse all live training sessions across levels and waves at the ICPC FCAI CU Community." %}{% endblock %}
+
+{% block structured_data %}
+  {{ block.super }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Sessions",
+    "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+    "mainEntity": { "@type": "ItemList", "itemListElement": [
+      {% for session in sessions %}{"@type": "ListItem", "position": {{ forloop.counter }}, "url": "{{ request.scheme }}://{{ request.get_host }}{{ session.get_absolute_url }}", "name": "{{ session.title|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}
+    ] }
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+<section class="bg-linear-to-b from-band to-surface">
+  <div class="container-page py-16 md:py-24">
+    <div class="mt-6 flex flex-wrap items-end justify-between gap-6">
+      <div class="max-w-2xl">
+        <h1 class="text-4xl sm:text-5xl">Sessions</h1>
+        <p class="mt-4 text-lg text-body">Live training sessions across every level and wave.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container-page mt-4" aria-label="All sessions">
+  <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+    {% for session in sessions %}
+      <li>{% include "partials/session_card.html" with session=session %}</li>
+    {% empty %}
+      <li class="sm:col-span-2 lg:col-span-3">{% include "partials/empty_state.html" with title="No sessions yet" text="Sessions will show up here once they are scheduled." %}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

@@ -1,0 +1,6 @@
+<form method="POST" action="{% url 'sessions-delete' session.slug %}">
+    {% csrf_token %}
+    <label>Are You sure to delete "{{ session.title }}" ?</label>
+    <button type="submit">Yes</button>
+    <a href="{% url 'sessions-edit' session.slug %}">Back to edit page</a>
+</form>

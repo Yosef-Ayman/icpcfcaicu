@@ -1,0 +1,11 @@
+{# Uiverse (EcheverriaJesus) tooltip icon. Usage: include with href icon label #}
+<div class="group relative">
+  <a href="{{ href }}" target="_blank" rel="noopener noreferrer" aria-label="{{ label }}"
+     class="block w-8 text-center text-2xl text-muted duration-200 hover:scale-125 hover:text-heading group-focus-within:scale-125 group-focus-within:text-heading">
+    <i class="{{ icon }}" aria-hidden="true"></i>
+  </a>
+  <span aria-hidden="true"
+        class="pointer-events-none absolute -top-14 left-1/2 z-20 origin-bottom -translate-x-1/2 scale-0 whitespace-nowrap rounded-lg border border-line bg-panel px-3 py-2 text-center text-sm font-bold text-heading shadow-float transition-all duration-300 ease-in-out group-hover:scale-100 group-focus-within:scale-100">
+    {{ label }}
+  </span>
+</div>

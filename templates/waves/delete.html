@@ -1,0 +1,6 @@
+<form method="POST" action="{% url 'waves-delete' wave.slug %}">
+    {% csrf_token %}
+    <label>Are You sure to delete "{{ wave.title }}" ?</label>
+    <button type="submit">Yes</button>
+    <a href="{% url 'waves-edit' wave.slug %}">Back to edit page</a>
+</form>

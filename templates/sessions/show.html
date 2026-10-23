@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block seo %}{% include "partials/seo.html" with title=session.title|add:" | Sessions | ICPC FCAI CU Community" description=session.description image=session.thumbnail_url image_alt=session.title og_type="article" %}{% endblock %}
+
+{% block structured_data %}
+  {{ block.super }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+          {"@type": "ListItem", "position": 2, "name": "Sessions", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'sessions-index' %}"},
+          {"@type": "ListItem", "position": 3, "name": "{{ session.title|escapejs }}"}
+        ]
+      }{% if session.starts_at %},
+      {
+        "@type": "Event",
+        "name": "{{ session.title|escapejs }}",
+        "startDate": "{{ session.starts_at|date:'c' }}",
+        {% if session.ends_at %}"endDate": "{{ session.ends_at|date:'c' }}",{% endif %}
+        "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "location": {"@type": "VirtualLocation", "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"},
+        "description": "{{ session.description|default:session.title|striptags|truncatechars:300|escapejs }}",
+        {% if session.thumbnail_url %}"image": "{{ session.thumbnail_url }}",{% endif %}
+        "organizer": {"@type": "Organization", "name": "ICPC FCAI CU Community", "url": "{{ request.scheme }}://{{ request.get_host }}/"}
+      }{% endif %}
+    ]
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+<section class="bg-linear-to-b from-band to-surface">
+  <div class="container-page py-16 md:py-24">
+    <h1 class="mt-6 max-w-3xl text-balance text-4xl sm:text-5xl lg:text-6xl">{{ session.title }}</h1>
+    <div class="mt-5 flex flex-wrap items-center gap-3">
+      {% if session.level %}
+      <a href="{{ session.level.get_absolute_url }}" class="inline-flex items-center gap-2 rounded-full border border-line bg-panel px-3 py-1 text-sm font-medium text-heading hover:bg-band">
+        <span class="level-dot size-2.5 rounded-full" style="--lc: {{ session.level.color|default:'#2b6aad' }}"></span>{{ session.level.title }}
+      </a>
+      {% endif %}
+      {% if session.wave %}<a href="{{ session.wave.get_absolute_url }}" class="label-mono hover:text-brand-text">{{ session.wave.title }}</a>{% endif %}
+    </div>
+  </div>
+</section>
+
+<div class="container-page mt-4 grid gap-10 lg:grid-cols-[1fr_20rem]">
+  <article>
+    {% if session.thumbnail_url %}
+      <img src="{{ session.thumbnail_url }}" alt="{{ session.title }}" width="1280" height="720" fetchpriority="high"
+           class="aspect-video w-full rounded-panel border border-line object-cover shadow-float">
+    {% endif %}
+    {% if session.description %}<p class="mt-8 text-lg text-body">{{ session.description }}</p>{% endif %}
+    {% if session.content %}<div class="mt-6 space-y-4 text-body">{{ session.content|linebreaks }}</div>{% endif %}
+  </article>
+
+  <aside class="lg:sticky lg:top-24 lg:self-start" aria-label="Session details">
+    <div class="panel p-6">
+      <p class="label-mono">Details</p>
+      <dl class="mt-4 space-y-4 text-sm">
+        {% if session.starts_at %}
+        <div>
+          <dt class="text-muted">When</dt>
+          <dd class="mt-1 font-medium text-heading">
+            <time datetime="{{ session.starts_at|date:'c' }}">{{ session.starts_at|date:"l, j F Y" }}</time><br>
+            <time datetime="{{ session.starts_at|date:'c' }}">{{ session.starts_at|time:"g:i A" }}</time>{% if session.ends_at %} – <time datetime="{{ session.ends_at|date:'c' }}">{{ session.ends_at|time:"g:i A" }}</time>{% endif %}
+          </dd>
+        </div>
+        {% endif %}
+        {% if session.level %}<div><dt class="text-muted">Level</dt><dd class="mt-1 font-medium text-heading"><a href="{{ session.level.get_absolute_url }}" class="hover:text-brand-text">{{ session.level.title }}</a></dd></div>{% endif %}
+        {% if session.wave %}<div><dt class="text-muted">Wave</dt><dd class="mt-1 font-medium text-heading"><a href="{{ session.wave.get_absolute_url }}" class="hover:text-brand-text">{{ session.wave.title }}</a></dd></div>{% endif %}
+      </dl>
+      <a href="https://chat.whatsapp.com/CtyfGcOzA3z1rADok27Ray" target="_blank" rel="noopener noreferrer" class="btn-cta mt-6 w-full">
+        Join the group
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg></span>
+      </a>
+    </div>
+    {% url 'sessions-edit' session.slug as edit_url %}{% url 'sessions-delete' session.slug as delete_url %}
+    <div class="mt-4">{% include "partials/staff_actions.html" with edit_url=edit_url delete_url=delete_url %}</div>
+  </aside>
+</div>
+{% endblock %}

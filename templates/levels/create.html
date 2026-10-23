@@ -1,0 +1,16 @@
+<form method="POST" action="{% url 'levels-index' %}">
+    {% csrf_token %}
+    <label>Title</label>
+    <input name="title" type="text" placeholder="level title" required>
+    <br>
+    <label>Slug</label>
+    <input name="slug" type="text" placeholder="level-slug" required>
+    <br>
+    <label>Description</label>
+    <textarea name="description"></textarea>
+    <br>
+    <label>Color</label>
+    <input name="color" type="color">
+    <br>
+    <button type="submit">Submit</button>
+</form>

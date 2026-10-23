@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block seo %}{% include "partials/seo.html" with title="Waves | ICPC FCAI CU Community" description="Each wave is a focused training period with live sessions. Find the current wave and join in." %}{% endblock %}
+
+{% block structured_data %}
+  {{ block.super }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Waves",
+    "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+    "mainEntity": { "@type": "ItemList", "itemListElement": [
+      {% for wave in waves %}{"@type": "ListItem", "position": {{ forloop.counter }}, "url": "{{ request.scheme }}://{{ request.get_host }}{{ wave.get_absolute_url }}", "name": "{{ wave.title|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}
+    ] }
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+<section class="bg-linear-to-b from-band to-surface">
+  <div class="container-page py-16 md:py-24">
+    <div class="mt-6 flex flex-wrap items-end justify-between gap-6">
+      <div class="max-w-2xl">
+        <h1 class="text-4xl sm:text-5xl">Waves</h1>
+        <p class="mt-4 text-lg text-body">A wave is a focused training period with its own schedule of live sessions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container-page mt-4" aria-label="All waves">
+  <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+    {% for wave in waves %}
+      <li>{% include "partials/wave_card.html" with wave=wave %}</li>
+    {% empty %}
+      <li class="sm:col-span-2 lg:col-span-3">{% include "partials/empty_state.html" with title="No waves yet" text="Waves will show up here once they are added." %}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

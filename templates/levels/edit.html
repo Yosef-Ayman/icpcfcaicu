@@ -1,0 +1,18 @@
+<form method="POST" action="{% url 'levels-edit' level.slug %}">
+    {% csrf_token %}
+    <label>Title</label>
+    <input name="title" type="text" placeholder="level title" value="{{ level.title }}" required>
+    <br>
+    <label>Slug</label>
+    <input name="slug" type="text" placeholder="level-slug" value="{{ level.slug }}" required>
+    <br>
+    <label>Description</label>
+    <textarea name="description">{{ level.description }}</textarea>
+    <br>
+    <label>Color</label>
+    <input name="color" type="color" value="{{ level.color }}">
+    <br>
+    <button type="submit">Submit</button>
+</form>
+
+<a href="{% url 'levels-show' level.slug %}">{{ level.title }}</a>

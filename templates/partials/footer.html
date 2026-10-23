@@ -1,0 +1,39 @@
+{% load static %}
+<footer class="mt-24 bg-linear-to-b from-surface to-band">
+  <div class="container-page py-14">
+    <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1.2fr]">
+      <div>
+        <a href="{% url 'home' %}" class="flex items-center gap-3">
+          <img src="{% static 'img/logo.svg' %}" alt="" width="44" height="33" class="h-9 w-auto" loading="lazy">
+          <span class="font-display text-lg font-bold text-heading">ICPC FCAI CU</span>
+        </a>
+        <p class="mt-4 max-w-sm text-sm text-muted">Structured training sessions, clear levels, and a community that grows together.</p>
+      </div>
+
+      <nav aria-label="Footer">
+        <p class="label-mono">Explore</p>
+        <ul class="mt-4 space-y-2 text-sm">
+          <li><a class="text-body hover:text-brand-text" href="{% url 'levels-index' %}">Levels</a></li>
+          <li><a class="text-body hover:text-brand-text" href="{% url 'waves-index' %}">Waves</a></li>
+          <li><a class="text-body hover:text-brand-text" href="{% url 'sessions-index' %}">Sessions</a></li>
+        </ul>
+      </nav>
+
+      <div id="connect">
+        <p class="label-mono">Connect</p>
+        <div class="mt-5 flex flex-wrap gap-5">
+          {% include "partials/social_link.html" with href="https://icpc-fcai-cu.org" icon="fa-solid fa-link" label="Main Site" %}
+          {% include "partials/social_link.html" with href="https://chat.whatsapp.com/CtyfGcOzA3z1rADok27Ray" icon="fa-brands fa-whatsapp" label="WhatsApp" %}
+          {% include "partials/social_link.html" with href="https://www.youtube.com/@ICPCFCAICU" icon="fa-brands fa-youtube" label="YouTube" %}
+          {% include "partials/social_link.html" with href="https://discord.gg/5vq5ma7wrN" icon="fa-brands fa-discord" label="Discord" %}
+          {% include "partials/social_link.html" with href="https://www.linkedin.com/company/icpc-fcai-cu-community" icon="fa-brands fa-linkedin" label="LinkedIn" %}
+          {% include "partials/social_link.html" with href="https://www.facebook.com/icpcfcaicu" icon="fa-brands fa-facebook" label="Facebook" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 border-t border-line pt-6 text-xs text-muted">
+      <p>© {% now "Y" %} ICPC FCAI CU Community. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

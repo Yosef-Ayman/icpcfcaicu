@@ -1,0 +1,22 @@
+{# include with: session, [hide_level], [hide_wave] #}
+<article class="panel relative flex h-full flex-col overflow-hidden transition hover:shadow-float">
+  {% if session.thumbnail_url %}
+    <img src="{{ session.thumbnail_url }}" alt="{{ session.title }}" width="640" height="360" class="aspect-video w-full object-cover" loading="lazy">
+  {% else %}
+    <div class="aspect-video w-full" style="--lc: {{ session.level.color|default:'#2b6aad' }}; background: color-mix(in srgb, var(--lc) 18%, var(--color-band))" aria-hidden="true"></div>
+  {% endif %}
+  <div class="flex flex-1 flex-col p-5">
+    <div class="flex flex-wrap items-center gap-2">
+      {% if session.level and not hide_level %}
+      <span class="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-heading">
+        <span class="level-dot size-2.5 rounded-full" style="--lc: {{ session.level.color|default:'#2b6aad' }}"></span>{{ session.level.title }}
+      </span>
+      {% endif %}
+      {% if session.wave and not hide_wave %}<span class="label-mono">{{ session.wave.title }}</span>{% endif %}
+    </div>
+    <h3 class="mt-3 text-lg"><a href="{{ session.get_absolute_url }}" class="after:absolute hover:text-brand-text">{{ session.title }}</a></h3>
+    {% if session.starts_at %}
+    <p class="mt-2 text-sm text-muted"><time datetime="{{ session.starts_at|date:'c' }}">{{ session.starts_at|date:"D, j M Y" }} · {{ session.starts_at|time:"g:i A" }}</time></p>
+    {% endif %}
+  </div>
+</article>

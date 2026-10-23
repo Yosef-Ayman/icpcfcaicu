@@ -1,0 +1,44 @@
+<script>
+(function () {
+  var root = document.documentElement, KEY = 'theme';
+  var btn = document.getElementById('theme-btn');
+  var panel = document.getElementById('theme-panel');
+  var menu = document.getElementById('theme-menu');
+  if (!btn || !panel) return;
+  var mq = matchMedia('(prefers-color-scheme: dark)');
+  var bars = { light: '#ffffff', dark: '#0e1014', cream: '#f1f2ea', midnight: '#0a1a31' };
+
+  function saved() { try { return localStorage.getItem(KEY) || 'system'; } catch (e) { return 'system'; } }
+  function resolve(c) { return c === 'system' ? (mq.matches ? 'dark' : 'light') : c; }
+
+  function apply(choice) {
+    var t = resolve(choice);
+    root.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', bars[t] || bars.light);
+    panel.querySelectorAll('[data-set-theme]').forEach(function (b) {
+      b.setAttribute('aria-checked', String(b.getAttribute('data-set-theme') === choice));
+    });
+  }
+  function setOpen(open) {
+    panel.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+  }
+
+  apply(saved());
+
+  btn.addEventListener('click', function () { setOpen(panel.hidden); });
+  panel.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-set-theme]');
+    if (!b) return;
+    var choice = b.getAttribute('data-set-theme');
+    try { localStorage.setItem(KEY, choice); } catch (err) {}
+    apply(choice);
+    setOpen(false);
+  });
+  document.addEventListener('click', function (e) { if (!menu.contains(e.target)) setOpen(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { setOpen(false); btn.focus(); } });
+  mq.addEventListener('change', function () { if (saved() === 'system') apply('system'); });
+  window.addEventListener('storage', function (e) { if (e.key === KEY) apply(saved()); });
+})();
+</script>

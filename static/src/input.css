@@ -1,0 +1,204 @@
+@import "tailwindcss";
+@source "../../templates";
+
+/* ───────────── Theme tokens (swapped via <html data-theme="…">) ───────────── */
+:root, [data-theme="light"] {
+  color-scheme: light;
+  --surface: #ffffff;   /* pure white */
+  --panel: #ffffff;
+  --band: #f5f7fa;
+  --heading: #0f172a;
+  --body: #475569;
+  --muted: #64748b;
+  --line: #e4e7ec;
+  --brand-text: #245a94;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #0e1014;
+  --panel: #161a21;
+  --band: #12161c;
+  --heading: #f4f5f7;
+  --body: #b6bcc6;
+  --muted: #8a919c;
+  --line: #262c36;
+  --brand-text: #7db2ee;
+}
+[data-theme="cream"] {  /* original Charm palette */
+  color-scheme: light;
+  --surface: #f7f7f5;
+  --panel: #fbfaf9;
+  --band: #f1f2ea;
+  --heading: #1c1917;
+  --body: #57534e;
+  --muted: #79716b;
+  --line: #e7e6e5;
+  --brand-text: #245a94;
+}
+[data-theme="midnight"] {
+  color-scheme: dark;
+  --surface: #0a1a31;
+  --panel: #10243f;
+  --band: #0d203a;
+  --heading: #f1f5fb;
+  --body: #b8c4d9;
+  --muted: #8a9bb8;
+  --line: #1f3a63;
+  --brand-text: #8ec0ff;
+}
+
+/* Utilities read the runtime variables */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-panel: var(--panel);
+  --color-band: var(--band);
+  --color-heading: var(--heading);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand-text: var(--brand-text);
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Circular", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fragment Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Community identity (from the logo) */
+  --color-level-0: #2b6aad; /* blue   */
+  --color-level-1: #ad281c; /* red    */
+  --color-level-2: #f7ab2f; /* yellow */
+  --color-brand: #2b6aad;
+
+  --radius-panel: 1.5rem;
+  --radius-menu: 0.75rem;
+  --shadow-control: 0 1px 2px rgb(0 0 0 / 0.1), inset 0 1px 0 rgb(255 255 255 / 0.18);
+  --shadow-float: 0 12px 32px -8px rgb(0 0 0 / 0.22), 0 2px 6px rgb(0 0 0 / 0.08);
+  --container-page: 80rem;
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { line-height: 1.65; transition: background-color .25s, color .25s; }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-heading);
+    line-height: 1.12;
+  }
+  :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+}
+
+@layer components {
+  .container-page { width: 100%; max-width: var(--container-page); margin-inline: auto; padding-inline: 1.25rem; }
+  @media (min-width: 40rem) { .container-page { padding-inline: 2rem; } }
+
+  .panel { background: var(--color-panel); border: 1px solid var(--color-line); border-radius: var(--radius-panel); }
+
+  .label-mono { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--color-muted); }
+
+  /* Basic pill (header CTA) */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    height: 2.75rem; padding-inline: 1.5rem; border-radius: 9999px;
+    font-size: .9375rem; font-weight: 600; white-space: nowrap; transition: filter .15s, transform .15s;
+  }
+  .btn-primary {
+    color: #fff;
+    background-image: linear-gradient(180deg, #3b7cc4 0%, #2b6aad 55%, #245a94 100%);
+    box-shadow: var(--shadow-control), 0 6px 16px -6px rgb(43 106 173 / .55);
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+
+  /* ── Uiverse (adamgiebl) → primary CTA: label + expanding icon tile ── */
+  .btn-cta {
+    position: relative; display: inline-flex; align-items: center; overflow: hidden; cursor: pointer;
+    height: 3rem; padding-inline: 1.5rem 3.75rem; border-radius: .9rem;
+    color: #fff; font-size: 1rem; font-weight: 600; letter-spacing: .03em; white-space: nowrap;
+    background-image: linear-gradient(180deg, #3b7cc4 0%, #2b6aad 55%, #245a94 100%);
+    box-shadow: inset 0 0 1.6em -.6em #1d4a7c;
+  }
+  .btn-cta .icon {
+    position: absolute; top: .3rem; inset-inline-end: .3rem;
+    display: flex; align-items: center; justify-content: center;
+    width: 2.4rem; height: 2.4rem; border-radius: .7rem; background: #fff;
+    box-shadow: .1em .1em .6em .2em rgb(29 74 124 / .55);
+    transition: width .3s, transform .3s;
+  }
+  .btn-cta .icon svg { width: 1.15rem; color: #245a94; transition: transform .3s; }
+  .btn-cta:hover .icon { width: calc(100% - .6rem); }
+  .btn-cta:hover .icon svg { transform: translateX(.15rem); }
+  .btn-cta:active .icon { transform: scale(.95); }
+
+  /* ── Uiverse (gharsh11032000) → secondary CTA: arrows slide, circle fills ── */
+  .btn-anim {
+    position: relative; display: inline-flex; align-items: center; gap: 4px; overflow: hidden; cursor: pointer;
+    padding: .8rem 2.5rem; border: 3px solid transparent; border-radius: 100px; background: transparent;
+    color: var(--color-brand-text); font-size: 1rem; font-weight: 600; white-space: nowrap;
+    box-shadow: 0 0 0 2px var(--color-brand);
+    transition: all .6s cubic-bezier(.23, 1, .32, 1);
+  }
+  .btn-anim svg { position: absolute; width: 1.25rem; fill: currentColor; z-index: 9; transition: all .8s cubic-bezier(.23, 1, .32, 1); }
+  .btn-anim .arr-1 { right: 1rem; }
+  .btn-anim .arr-2 { left: -25%; }
+  .btn-anim .circle {
+    position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--color-brand); opacity: 0; transform: translate(-50%, -50%);
+    transition: all .8s cubic-bezier(.23, 1, .32, 1);
+  }
+  .btn-anim .text { position: relative; z-index: 1; transform: translateX(-12px); transition: all .8s cubic-bezier(.23, 1, .32, 1); }
+  .btn-anim:hover { box-shadow: 0 0 0 12px transparent; color: #fff; border-radius: 12px; }
+  .btn-anim:hover .arr-1 { right: -25%; }
+  .btn-anim:hover .arr-2 { left: 1rem; }
+  .btn-anim:hover .text { transform: translateX(12px); }
+  .btn-anim:hover .circle { width: 220px; height: 220px; opacity: 1; }
+  .btn-anim:active { scale: .95; box-shadow: 0 0 0 4px var(--color-brand); }
+
+  /* ── Uiverse (AKAspidey01) → "view all": yellow tile slides over the label ── */
+  .btn-slide {
+    position: relative; display: inline-block; width: 14rem; height: 3.5rem;
+    border: 1px solid var(--color-line); border-radius: 1rem; background: var(--color-panel);
+    color: var(--color-heading); font-weight: 600; text-align: center; line-height: calc(3.5rem - 2px);
+  }
+  .btn-slide .label { display: block; padding-inline-start: 2.75rem; }
+  .btn-slide .slide-block {
+    position: absolute; z-index: 10; top: .25rem; inset-inline-start: .25rem;
+    display: flex; align-items: center; justify-content: center;
+    width: 3.25rem; height: calc(100% - .5rem); border-radius: .75rem;
+    background: var(--color-level-2); color: #1c1917; transition: width .5s;
+  }
+  .btn-slide:hover .slide-block { width: calc(100% - .5rem); }
+
+  /* ── Uiverse (ayman-ashine) → floating join pill, label expands on hover ── */
+  .fab {
+    position: fixed; z-index: 40; bottom: 1.25rem; inset-inline-end: 1.25rem;
+    display: flex; align-items: center; padding: .9rem; border-radius: 9999px; color: #fff;
+    background-image: linear-gradient(135deg, #2b6aad, #5b9be0);
+    box-shadow: var(--shadow-float); transition: gap .3s;
+  }
+  .fab .fab-label { font-size: 0; font-weight: 600; white-space: nowrap; transition: font-size .3s; }
+  .fab:hover, .fab:focus-visible { gap: .5rem; }
+  .fab:hover .fab-label, .fab:focus-visible .fab-label { font-size: .875rem; }
+
+  /* Theme menu swatch */
+  .swatch {
+    width: 1.25rem; height: 1.25rem; flex: none; border-radius: 9999px; border: 1px solid var(--color-line);
+    background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%);
+  }
+
+  /* Level card (colour comes from --lc) */
+  .level-card { border-block-start: 4px solid var(--lc, var(--color-level-0)); transition: box-shadow .2s; }
+  .level-card:hover { box-shadow: var(--shadow-float); }
+  .level-dot { background: var(--lc, var(--color-level-0)); }
+
+  .hero-lines {
+    background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--color-heading) 6%, transparent) 0 1px, transparent 1px 16px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent 90%);
+            mask-image: linear-gradient(to bottom, #000 30%, transparent 90%);
+  }
+}
+@media print { .fab { display: none; } }

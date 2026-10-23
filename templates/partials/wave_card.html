@@ -1,0 +1,18 @@
+{# include with: wave #}
+<article class="panel relative flex h-full flex-col overflow-hidden transition hover:shadow-float">
+  {% if wave.thumbnail_url %}
+    <img src="{{ wave.thumbnail_url }}" alt="{{ wave.title }}" width="640" height="360" class="aspect-video w-full object-cover" loading="lazy">
+  {% else %}
+    <div class="aspect-video w-full bg-band" aria-hidden="true"></div>
+  {% endif %}
+  <div class="flex flex-1 flex-col p-6">
+    <p class="label-mono">Wave</p>
+    <h3 class="mt-2 text-xl"><a href="{{ wave.get_absolute_url }}" class="after:absolute hover:text-brand-text">{{ wave.title }}</a></h3>
+    {% if wave.starts_at %}
+    <p class="mt-2 text-sm text-muted">
+      <time datetime="{{ wave.starts_at|date:'c' }}">{{ wave.starts_at|date:"j M Y" }}</time>{% if wave.ends_at %} – <time datetime="{{ wave.ends_at|date:'c' }}">{{ wave.ends_at|date:"j M Y" }}</time>{% endif %}
+    </p>
+    {% endif %}
+    {% if wave.description %}<p class="mt-3 flex-1 text-sm text-body">{{ wave.description|truncatewords:22 }}</p>{% endif %}
+  </div>
+</article>

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block seo %}{% include "partials/seo.html" with title=wave.title|add:" | Waves | ICPC FCAI CU Community" description=wave.description image=wave.thumbnail_url image_alt=wave.title og_type="article" %}{% endblock %}
+
+{% block structured_data %}
+  {{ block.super }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+          {"@type": "ListItem", "position": 2, "name": "Waves", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'waves-index' %}"},
+          {"@type": "ListItem", "position": 3, "name": "{{ wave.title|escapejs }}"}
+        ]
+      }{% if wave.starts_at %},
+      {
+        "@type": "Event",
+        "name": "{{ wave.title|escapejs }}",
+        "startDate": "{{ wave.starts_at|date:'c' }}",
+        {% if wave.ends_at %}"endDate": "{{ wave.ends_at|date:'c' }}",{% endif %}
+        "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "location": {"@type": "VirtualLocation", "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"},
+        "description": "{{ wave.description|default:wave.title|striptags|truncatechars:300|escapejs }}",
+        {% if wave.thumbnail_url %}"image": "{{ wave.thumbnail_url }}",{% endif %}
+        "organizer": {"@type": "Organization", "name": "ICPC FCAI CU Community", "url": "{{ request.scheme }}://{{ request.get_host }}/"}
+      }{% endif %}
+    ]
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+{% url 'wave-sessions-show' wave.slug as sessions_url %}
+<section class="bg-linear-to-b from-band to-surface">
+  <div class="container-page py-16 md:py-24">
+    <div class="mt-8 grid items-center gap-10 lg:grid-cols-2">
+      <div>
+        <p class="label-mono">Wave</p>
+        <h1 class="mt-4 text-balance text-4xl sm:text-5xl lg:text-6xl">{{ wave.title }}</h1>
+        {% if wave.starts_at %}
+        <p class="mt-4 text-sm text-muted">
+          <time datetime="{{ wave.starts_at|date:'c' }}">{{ wave.starts_at|date:"j M Y" }}</time>{% if wave.ends_at %} – <time datetime="{{ wave.ends_at|date:'c' }}">{{ wave.ends_at|date:"j M Y" }}</time>{% endif %}
+        </p>
+        {% endif %}
+        {% if wave.description %}<p class="mt-5 max-w-xl text-lg text-body">{{ wave.description }}</p>{% endif %}
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a href="{{ sessions_url }}" class="btn-cta">
+            View sessions
+            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg></span>
+          </a>
+          {% url 'waves-edit' wave.slug as edit_url %}{% url 'waves-delete' wave.slug as delete_url %}
+          {% include "partials/staff_actions.html" with edit_url=edit_url delete_url=delete_url %}
+        </div>
+      </div>
+
+      {% if wave.thumbnail_url %}
+        <img src="{{ wave.thumbnail_url }}" alt="{{ wave.title }}" width="1280" height="720" fetchpriority="high"
+             class="aspect-video w-full rounded-panel border border-line object-cover shadow-float">
+      {% else %}
+        <div class="aspect-video w-full rounded-panel border border-line bg-band" aria-hidden="true"></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="container-page mt-16" aria-labelledby="latest-title">
+  <div class="flex flex-wrap items-end justify-between gap-6">
+    <h2 id="latest-title" class="text-3xl sm:text-4xl">Sessions in this wave</h2>
+    <a href="{{ sessions_url }}" class="btn-slide">
+      <span class="slide-block" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      <span class="label">All sessions</span>
+    </a>
+  </div>
+  <ul class="mt-8 grid gap-6 md:grid-cols-3" role="list">
+    {% for session in wave.sessions.all|slice:":3" %}
+      <li>{% include "partials/session_card.html" with session=session hide_wave=True %}</li>
+    {% empty %}
+      <li class="md:col-span-3">{% include "partials/empty_state.html" with title="No sessions yet" text="Sessions for this wave will appear here." %}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

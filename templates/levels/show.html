@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block seo %}{% include "partials/seo.html" with title=level.title|add:" | Levels | ICPC FCAI CU Community" description=level.description image=level.thumbnail_url image_alt=level.title og_type="article" %}{% endblock %}
+
+{% block structured_data %}
+  {{ block.super }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ request.scheme }}://{{ request.get_host }}/"},
+          {"@type": "ListItem", "position": 2, "name": "Levels", "item": "{{ request.scheme }}://{{ request.get_host }}{% url 'levels-index' %}"},
+          {"@type": "ListItem", "position": 3, "name": "{{ level.title|escapejs }}"}
+        ]
+      },
+      {
+        "@type": "Course",
+        "name": "{{ level.title|escapejs }}",
+        "description": "{{ level.description|default:level.title|striptags|truncatechars:300|escapejs }}",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}",
+        {% if level.thumbnail_url %}"image": "{{ level.thumbnail_url }}",{% endif %}
+        "provider": {"@type": "Organization", "name": "ICPC FCAI CU Community", "url": "{{ request.scheme }}://{{ request.get_host }}/"}
+      }
+    ]
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+{% url 'level-sessions-show' level.slug as sessions_url %}
+<section class="bg-linear-to-b from-band to-surface" style="--lc: {{ level.color|default:'#2b6aad' }}">
+  <div class="container-page py-16 md:py-24">
+    <div class="mt-8 grid items-center gap-10 lg:grid-cols-2">
+      <div>
+        <p class="label-mono flex items-center gap-2"><span class="level-dot size-2.5 rounded-full" aria-hidden="true"></span>Level</p>
+        <h1 class="mt-4 text-balance text-4xl sm:text-5xl lg:text-6xl">{{ level.title }}</h1>
+        {% if level.description %}<p class="mt-5 max-w-xl text-lg text-body">{{ level.description }}</p>{% endif %}
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a href="{{ sessions_url }}" class="btn-cta">
+            View sessions
+            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg></span>
+          </a>
+          {% url 'levels-edit' level.slug as edit_url %}{% url 'levels-delete' level.slug as delete_url %}
+          {% include "partials/staff_actions.html" with edit_url=edit_url delete_url=delete_url %}
+        </div>
+      </div>
+
+      {% if level.thumbnail_url %}
+        <img src="{{ level.thumbnail_url }}" alt="{{ level.title }}" width="1280" height="720" fetchpriority="high"
+             class="level-card aspect-video w-full rounded-panel border border-line object-cover shadow-float">
+      {% else %}
+        <div class="level-card aspect-video w-full rounded-panel border border-line" style="background: color-mix(in srgb, var(--lc) 18%, var(--color-band))" aria-hidden="true"></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="container-page mt-16" aria-labelledby="latest-title">
+  <div class="flex flex-wrap items-end justify-between gap-6">
+    <h2 id="latest-title" class="text-3xl sm:text-4xl">Latest sessions</h2>
+    <a href="{{ sessions_url }}" class="btn-slide">
+      <span class="slide-block" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      <span class="label">All sessions</span>
+    </a>
+  </div>
+  <ul class="mt-8 grid gap-6 md:grid-cols-3" role="list">
+    {% for session in level.sessions.all|slice:":3" %}
+      <li>{% include "partials/session_card.html" with session=session hide_level=True %}</li>
+    {% empty %}
+      <li class="md:col-span-3">{% include "partials/empty_state.html" with title="No sessions yet" text="Sessions for this level will appear here." %}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

@@ -1,0 +1,6 @@
+<form method="POST" action="{% url 'levels-delete' level.slug %}">
+    {% csrf_token %}
+    <label>Are You sure to delete "{{ level.title }}" ?</label>
+    <button type="submit">Yes</button>
+    <a href="{% url 'levels-edit' level.slug %}">Back to edit page</a>
+</form>
