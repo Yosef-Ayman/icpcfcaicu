@@ -7,6 +7,7 @@ dependencies = [
     "asgiref",
     "Django",
     "django-environ",
+    "dj-database-url",
     "sqlparse",
     "tzdata",
 ]
