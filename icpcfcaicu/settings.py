@@ -107,6 +107,7 @@ DATABASES = {
         ssl_require=not DEBUG
     )
 }
+DATABASES["default"]["CONN_MAX_AGE"] = 0
 
 
 # Password validation
