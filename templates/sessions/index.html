@@ -25,6 +25,51 @@
         <h1 class="text-4xl sm:text-5xl">Sessions</h1>
         <p class="mt-4 text-lg text-body">Live training sessions across every level and wave.</p>
       </div>
+      <form method="GET" action="" class="flex flex-wrap items-center gap-4 bg-surface/50 p-4 rounded-xl border border-border">
+        <div class="flex flex-col gap-1">
+          <label for="level" class="text-xs font-semibold text-body uppercase tracking-wider">Level</label>
+          <select name="level" id="level" class="rounded-lg border border-border bg-background px-3 py-2 text-sm text-heading focus:border-primary focus:outline-hidden">
+            <option value="">All Levels</option>
+            {% for level in levels %}
+              <option value="{{ level.slug }}" {% if request.GET.level == level.slug %}selected{% endif %}>
+                {{ level.title }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="wave" class="text-xs font-semibold text-body uppercase tracking-wider">Wave</label>
+          <select name="wave" id="wave" class="rounded-lg border border-border bg-background px-3 py-2 text-sm text-heading focus:border-primary focus:outline-hidden">
+            <option value="">All Waves</option>
+            {% for wave in waves %}
+              <option value="{{ wave.slug }}" {% if request.GET.wave == wave.slug %}selected{% endif %}>
+                {{ wave.title }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="start_date" class="text-xs font-semibold text-body uppercase tracking-wider">Start Date (After)</label>
+          <input 
+            type="date" 
+            name="starts_date" 
+            id="start_date" 
+            value="{{ request.GET.starts_date }}"
+            class="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-heading focus:border-primary focus:outline-hidden"
+          >
+        </div>
+
+        <div class="pt-5">
+          <button type="submit" class="cursor-pointer btn btn-primary">
+            Filter
+          </button>
+          {% if request.GET.level or request.GET.wave %}
+            <a href="{% url 'sessions-index' %}" class="ml-2 text-sm text-body hover:text-heading underline">Clear</a>
+          {% endif %}
+        </div>
+      </form>
     </div>
   </div>
 </section>

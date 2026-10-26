@@ -1,9 +1,11 @@
+from datetime import datetime
 from http import HTTPMethod, HTTPStatus
 from urllib.parse import parse_qs
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_slug
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from django.utils.dateparse import parse_date
 from icpcfcaicu.utils import is_valid_datetime, validate_event_duration
 from waves.models import Wave
@@ -88,10 +90,30 @@ def index(request):
         return redirect("sessions-show", session.slug)
     """
 
-    sessions = Session.objects.all()
+    level_parameter = request.GET.get("level")
+    wave_parameter = request.GET.get("wave")
+    starts_date_parameter = request.GET.get("starts_date")
+
+    sessions = Session.objects.all().order_by("starts_at", "level_id")
+
+    if level_parameter:
+        sessions = sessions.filter(level__slug=level_parameter)
+
+    if wave_parameter:
+        sessions = sessions.filter(wave__slug=wave_parameter)
+
+    if starts_date_parameter:
+        try:
+            parsed_date = datetime.strptime(starts_date_parameter, '%Y-%m-%d').date()
+
+            sessions = sessions.filter(starts_at__gte=parsed_date)
+        except ValueError:
+            sessions = sessions.filter(starts_at__gte=timezone.now())
 
     return render(request, "sessions/index.html", {
         "sessions": sessions,
+        "levels": Level.objects.all(),
+        "waves": Wave.objects.all(),
     })
 
 def create(request):
