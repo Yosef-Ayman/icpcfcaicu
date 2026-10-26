@@ -166,7 +166,7 @@ def delete(request, slug):
 
 def show_wave_sessions(request, slug):
     wave = get_object_or_404(Wave, slug=slug)
-    sessions = wave.sessions.all()
+    sessions = wave.sessions.all().order_by("starts_at", "level_id")
     print("sessions: ", sessions)
     return render(request, "waves/sessions/index.html", {
         "wave": wave,

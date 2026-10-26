@@ -129,7 +129,7 @@ def delete(request, slug):
 
 def show_level_sessions(request, slug):
     level = get_object_or_404(Level, slug=slug)
-    sessions = level.sessions.all()
+    sessions = level.sessions.all().order_by("starts_at", "level_id")
     print("sessions: ", sessions)
     return render(request, "levels/sessions/index.html", {
         "level": level,
