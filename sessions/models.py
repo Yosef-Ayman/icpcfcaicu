@@ -33,7 +33,8 @@ class Session(models.Model):
     starts_at = models.DateTimeField(null=True, blank=True)
     ends_at = models.DateTimeField(null=True, blank=True)
     content = models.TextField(null=True, blank=True)
-    thumbnail_url = models.URLField(max_length=200, blank=True)
+    thumbnail_url = models.URLField(max_length=200, null=True, blank=True)
+    embed_url = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         verbose_name = "Session"

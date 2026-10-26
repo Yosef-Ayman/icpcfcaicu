@@ -48,7 +48,7 @@
     "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.svg' %}",
     "sameAs": [
       "https://icpc-fcai-cu.org",
-      "https://www.youtube.com/@ICPCFCAICU",
+      "https://www.youtube.com/@triplec342",
       "https://www.linkedin.com/company/icpc-fcai-cu-community",
       "https://www.facebook.com/icpcfcaicu"
     ]
@@ -58,8 +58,12 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-dvh bg-surface font-sans text-body antialiased">
-  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-heading focus:px-5 focus:py-2 focus:text-surface">Skip to content</a>
-
+  <noscript>
+    <div class="fixed inset-x-0 top-0 z-[100] border-b border-line bg-panel p-4 text-center text-sm text-heading">
+      JavaScript is disabled. Some features may not work correctly.
+      Please enable JavaScript for the best experience.
+    </div>
+  </noscript>
   {% include "partials/header.html" %}
   <main id="main">{% block content %}{% endblock %}</main>
   {% include "partials/footer.html" %}

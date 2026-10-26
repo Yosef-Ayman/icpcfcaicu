@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.dateparse import parse_date
 from icpcfcaicu.utils import is_valid_datetime, validate_event_duration
 from .models import Wave
+from sessions.models import Session
 
 # Create your views here.
 def index(request):
@@ -78,8 +79,11 @@ def create(request):
 def show(request, slug):
     wave = get_object_or_404(Wave, slug=slug)
 
+    sessions = Session.objects.all().order_by("starts_at", "level_id")[:3]
+
     return render(request, "waves/show.html", {
         "wave": wave,
+        "sessions": sessions,
     })
 
 def edit(request, slug):

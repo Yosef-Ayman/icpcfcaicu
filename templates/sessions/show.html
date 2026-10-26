@@ -36,6 +36,8 @@
 {% block content %}
 <section class="bg-linear-to-b from-band to-surface">
   <div class="container-page py-16 md:py-24">
+    {% url 'sessions-index' as back_url %}
+    {% include "partials/back_button.html" with url=back_url title="Sessions" %}
     <h1 class="mt-6 max-w-3xl text-balance text-4xl sm:text-5xl lg:text-6xl">{{ session.title }}</h1>
     <div class="mt-5 flex flex-wrap items-center gap-3">
       {% if session.level %}
@@ -50,10 +52,36 @@
 
 <div class="container-page mt-4 grid gap-10 lg:grid-cols-[1fr_20rem]">
   <article>
-    {% if session.thumbnail_url %}
-      <img src="{{ session.thumbnail_url }}" alt="{{ session.title }}" width="1280" height="720" fetchpriority="high"
-           class="aspect-video w-full rounded-panel border border-line object-cover shadow-float">
-    {% endif %}
+  {% if session.thumbnail_url %}
+    <img
+      src="{{ session.thumbnail_url }}"
+      alt="{{ session.title }}"
+      width="1280"
+      height="720"
+      fetchpriority="high"
+      class="aspect-video w-full rounded-panel border border-line object-cover shadow-float"
+    >
+  {% else %}
+    {% include "partials/empty_thumbnail.html" %}
+  {% endif %}
+
+  {% if session.embed_url %}
+    <div class="mt-6">
+      <h2 class="mb-4 text-2xl font-semibold text-heading">Session Recording</h2>
+
+      <div class="aspect-video w-full overflow-hidden rounded-panel border border-line bg-black shadow-float">
+        <iframe
+          src="https://www.youtube.com/embed/{{ session.embed_url }}"
+          title="{{ session.title }} - Session Recording"
+          class="h-full w-full"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  {% endif %}
     {% if session.description %}<p class="mt-8 text-lg text-body">{{ session.description }}</p>{% endif %}
     {% if session.content %}<div class="mt-6 space-y-4 text-body">{{ session.content|linebreaks }}</div>{% endif %}
   </article>
@@ -74,10 +102,17 @@
         {% if session.level %}<div><dt class="text-muted">Level</dt><dd class="mt-1 font-medium text-heading"><a href="{{ session.level.get_absolute_url }}" class="hover:text-brand-text">{{ session.level.title }}</a></dd></div>{% endif %}
         {% if session.wave %}<div><dt class="text-muted">Wave</dt><dd class="mt-1 font-medium text-heading"><a href="{{ session.wave.get_absolute_url }}" class="hover:text-brand-text">{{ session.wave.title }}</a></dd></div>{% endif %}
       </dl>
-      <a href="https://chat.whatsapp.com/CtyfGcOzA3z1rADok27Ray" target="_blank" rel="noopener noreferrer" class="btn-cta mt-6 w-full">
-        Join the group
+      {% if session.embed_url %}
+      <a href="https://www.youtube.com/watch?v={{ session.embed_url }}" target="_blank" rel="noopener noreferrer" class="btn-cta mt-6 w-full" style="background-image: none; background-color: #FF0033;">
+        View Session
         <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg></span>
       </a>
+      {% else %}
+      <a href="https://www.youtube.com/@StepByStep-t1l/videos" target="_blank" rel="noopener noreferrer" class="btn-cta mt-6 w-full" style="background-image: none; background-color: #FF0033;">
+        View Session
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg></span>
+      </a>
+      {% endif %}
     </div>
     {% url 'sessions-edit' session.slug as edit_url %}{% url 'sessions-delete' session.slug as delete_url %}
     <div class="mt-4">{% include "partials/staff_actions.html" with edit_url=edit_url delete_url=delete_url %}</div>

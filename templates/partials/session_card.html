@@ -3,7 +3,7 @@
   {% if session.thumbnail_url %}
     <img src="{{ session.thumbnail_url }}" alt="{{ session.title }}" width="640" height="360" class="aspect-video w-full object-cover" loading="lazy">
   {% else %}
-    <div class="aspect-video w-full" style="--lc: {{ session.level.color|default:'#2b6aad' }}; background: color-mix(in srgb, var(--lc) 18%, var(--color-band))" aria-hidden="true"></div>
+    {% include "partials/empty_thumbnail.html" %}
   {% endif %}
   <div class="flex flex-1 flex-col p-5">
     <div class="flex flex-wrap items-center gap-2">

@@ -150,6 +150,9 @@
     background-color: transparent;
     opacity: 1;
   }
+  option {
+    color: #000000;
+  }
   :where(select:is([multiple], [size])) optgroup {
     font-weight: bolder;
   }

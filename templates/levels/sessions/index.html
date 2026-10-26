@@ -31,9 +31,13 @@
 {% block content %}
 <section class="bg-linear-to-b from-band to-surface" style="--lc: {{ level.color|default:'#2b6aad' }}">
   <div class="container-page py-16 md:py-24">
+    {% url 'levels-show' level.slug as back_url %}
+    {% include "partials/back_button.html" with url=back_url title=level.title %}
     <div class="mt-6 flex items-center gap-5">
       {% if level.thumbnail_url %}
         <img src="{{ level.thumbnail_url }}" alt="{{ level.title }}" width="160" height="90" class="level-card hidden aspect-video w-32 rounded-2xl border border-line object-cover sm:block" loading="lazy">
+      {% else %}
+        {% include "partials/empty_thumbnail.html" %}
       {% endif %}
       <div>
         <p class="label-mono flex items-center gap-2"><span class="level-dot size-2.5 rounded-full" aria-hidden="true"></span>{{ level.title }}</p>

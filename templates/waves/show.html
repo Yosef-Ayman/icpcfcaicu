@@ -37,6 +37,8 @@
 {% url 'wave-sessions-show' wave.slug as sessions_url %}
 <section class="bg-linear-to-b from-band to-surface">
   <div class="container-page py-16 md:py-24">
+    {% url 'waves-index' as back_url %}
+    {% include "partials/back_button.html" with url=back_url title="Waves" %}
     <div class="mt-8 grid items-center gap-10 lg:grid-cols-2">
       <div>
         <p class="label-mono">Wave</p>
@@ -47,21 +49,13 @@
         </p>
         {% endif %}
         {% if wave.description %}<p class="mt-5 max-w-xl text-lg text-body">{{ wave.description }}</p>{% endif %}
-        <div class="mt-8 flex flex-wrap items-center gap-4">
-          <a href="{{ sessions_url }}" class="btn-cta">
-            View sessions
-            <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg></span>
-          </a>
-          {% url 'waves-edit' wave.slug as edit_url %}{% url 'waves-delete' wave.slug as delete_url %}
-          {% include "partials/staff_actions.html" with edit_url=edit_url delete_url=delete_url %}
-        </div>
       </div>
 
       {% if wave.thumbnail_url %}
         <img src="{{ wave.thumbnail_url }}" alt="{{ wave.title }}" width="1280" height="720" fetchpriority="high"
              class="aspect-video w-full rounded-panel border border-line object-cover shadow-float">
       {% else %}
-        <div class="aspect-video w-full rounded-panel border border-line bg-band" aria-hidden="true"></div>
+        {% include "partials/empty_thumbnail.html" %}
       {% endif %}
     </div>
   </div>
@@ -76,7 +70,7 @@
     </a>
   </div>
   <ul class="mt-8 grid gap-6 md:grid-cols-3" role="list">
-    {% for session in wave.sessions.all|slice:":3" %}
+    {% for session in sessions|slice:":3" %}
       <li>{% include "partials/session_card.html" with session=session hide_wave=True %}</li>
     {% empty %}
       <li class="md:col-span-3">{% include "partials/empty_state.html" with title="No sessions yet" text="Sessions for this wave will appear here." %}</li>

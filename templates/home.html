@@ -95,6 +95,8 @@
       {% if next_sessions %}
         {% if next_sessions.0.thumbnail_url %}
           <img src="{{ next_sessions.0.thumbnail_url }}" alt="{{ next_sessions.0.title }}" width="640" height="360" class="aspect-video w-full object-cover" fetchpriority="high">
+        {% else %}
+          {% include "partials/empty_thumbnail.html" %}
         {% endif %}
         <div class="border border-y border-line p-6 sm:p-7">
           <p id="next-session-title" class="label-mono">Next session</p>
@@ -134,7 +136,7 @@
 {# ───────── Current wave ───────── #}
 {% if current_wave %}
 <section class="container-page mt-6" aria-labelledby="wave-title">
-  <div class="panel grid overflow-hidden md:grid-cols-[0.8fr_1.2fr]">
+  <div class="panel overflow-hidden">
     {% if current_wave.thumbnail_url %}
       <img src="{{ current_wave.thumbnail_url }}" alt="{{ current_wave.title }}" width="640" height="420" class="h-full max-h-80 w-full object-cover md:max-h-none" loading="lazy">
     {% endif %}
@@ -181,6 +183,8 @@
         <article class="panel level-card relative flex h-full flex-col overflow-hidden" style="--lc: {{ level.color|default:fallback }}">
           {% if level.thumbnail_url %}
             <img src="{{ level.thumbnail_url }}" alt="{{ level.title }}" width="640" height="360" class="aspect-video w-full object-cover" loading="lazy">
+          {% else %}
+            {% include "partials/empty_thumbnail.html" %}
           {% endif %}
           <div class="flex flex-1 flex-col p-6 sm:p-7">
             <div class="flex items-center gap-2">
@@ -221,6 +225,8 @@
         <article class="panel session-card relative flex h-full flex-col overflow-hidden">
           {% if session.thumbnail_url %}
             <img src="{{ session.thumbnail_url }}" alt="{{ session.title }}" width="640" height="360" class="aspect-video w-full object-cover" loading="lazy">
+          {% else %}
+            {% include "partials/empty_thumbnail.html" %}
           {% endif %}
 
           <div class="border border-y border-line p-6 sm:p-7">
@@ -239,13 +245,6 @@
               {{ session.level.title }}
             </a>
             {% endif %}
-
-            <a href="{{ session.get_absolute_url }}" class="btn-cta mt-6 w-full">
-              Reserve your spot
-              <span class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"/></svg>
-              </span>
-            </a>
           </div>
         </article>
       </li>

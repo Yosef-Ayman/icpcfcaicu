@@ -2,6 +2,8 @@
 <article class="panel level-card relative flex h-full flex-col overflow-hidden" style="--lc: {{ color|default:'#2b6aad' }}">
   {% if level.thumbnail_url %}
     <img src="{{ level.thumbnail_url }}" alt="{{ level.title }}" width="640" height="360" class="aspect-video w-full object-cover" loading="lazy">
+  {% else %}
+    {% include "partials/empty_thumbnail.html" %}
   {% endif %}
   <div class="flex flex-1 flex-col p-6 sm:p-7">
     <div class="flex items-center gap-2">

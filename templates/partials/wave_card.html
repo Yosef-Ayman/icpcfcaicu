@@ -3,7 +3,7 @@
   {% if wave.thumbnail_url %}
     <img src="{{ wave.thumbnail_url }}" alt="{{ wave.title }}" width="640" height="360" class="aspect-video w-full object-cover" loading="lazy">
   {% else %}
-    <div class="aspect-video w-full bg-band" aria-hidden="true"></div>
+    {% include "partials/empty_thumbnail.html" %}
   {% endif %}
   <div class="flex flex-1 flex-col p-6">
     <p class="label-mono">Wave</p>
